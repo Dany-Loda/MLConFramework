@@ -71,94 +71,94 @@ print("-----------* Librerias importadas con éxito \n")
 
 # ### 2. Definir funciones
 
-# In[23]:
+# In[234]:
 
 
 # Función para obtener el nombre del género para un 'movie_id'
 def obtener_genre_name(movie_id):
           # Buscamos el movie_id en el dataset data_item y seleccionamos las columnas binarias de cada genre_id
-genres = data_item[data_item['movie_id'] == movie_id].iloc[:, 5:] 
+    genres = data_item[data_item['movie_id'] == movie_id].iloc[:, 5:] 
           # Buscamos la columna que tiene el valor máximo (1) y accedemos al nombre de la columna (genre_id)
-genre_id = genres.idxmax(axis=1).values[0]
+    genre_id = genres.idxmax(axis=1).values[0]
           # Con el genre_id y el diccionario, obtenemos el genre_name de el movie_id correspondiente
-return genre_mapping[int(genre_id.split('_')[1])]
+    return genre_mapping[int(genre_id.split('_')[1])]
 
     # Función para definir estructura del modelo de red neuronal
 def set_nn_model_architecture():
     # Define Model
-model = Sequential(name='my_sequential_model')
+    model = Sequential(name='my_sequential_model')
 
     # Hidden Layer 1: Fully-connected layer con 64 unidades y función de activación ReLU
-model.add(Dense(units=16, input_shape=X_train_encoded.shape[1:], activation='relu',
+    model.add(Dense(units=16, input_shape=X_train_encoded.shape[1:], activation='relu',
                 kernel_initializer=he_normal(),
                 name='hiddenlayer1'))
 
     # Capa de salida
-model.add(Dense(units=1, activation='linear', name='outputlayer'))
+    model.add(Dense(units=1, activation='linear', name='outputlayer'))
 
-model.summary()
+    model.summary()
 
-return model
+    return model
 
     # Función para definir estructura del modelo de red neuronal mejorado
 def set_nn_model_architecture_better():
 # Define Model
-model = Sequential(name='my_sequential_model')
+    model = Sequential(name='my_sequential_model')
 
-# Hidden Layer 1: Fully-connected layer con 64 unidades y función de activación ReLU
-model.add(Dense(units=16, input_shape=X_train_encoded.shape[1:], activation='relu',
-                kernel_initializer=he_normal(),
-                name='hiddenlayer1'))
+    # Hidden Layer 1: Fully-connected layer con 64 unidades y función de activación ReLU
+    model.add(Dense(units=16, input_shape=X_train_encoded.shape[1:], activation='relu',
+                    kernel_initializer=he_normal(),
+                    name='hiddenlayer1'))
+    
+    model.add(Dropout(rate=0.3))  # Dropout para regularización
 
-model.add(Dropout(rate=0.3))  # Dropout para regularización
+    # Capas ocultas adicionales con regularización L2 y BatchNormalization
+    model.add(Dense(units=32, activation='relu', name='hiddenlayer2', kernel_regularizer=l2(0.001)))
+    model.add(Dense(units=32, activation='relu', name='hiddenlayer3', kernel_regularizer=l2(0.001)))
 
-# Capas ocultas adicionales con regularización L2 y BatchNormalization
-model.add(Dense(units=32, activation='relu', name='hiddenlayer2', kernel_regularizer=l2(0.001)))
-model.add(Dense(units=32, activation='relu', name='hiddenlayer3', kernel_regularizer=l2(0.001)))
-   
-   # Agrega Batch Normalization después de la capa oculta
-model.add(BatchNormalization(name='batch_normalization1'))
+# Agrega Batch Normalization después de la capa oculta
+    model.add(BatchNormalization(name='batch_normalization1'))
 
-model.add(Dense(units=64, activation='relu', name='hiddenlayer4', kernel_regularizer=l2(0.001)))
-model.add(Dense(units=64, activation='relu', name='hiddenlayer5', kernel_regularizer=l2(0.001)))
-model.add(Dense(units=128, activation='relu', name='hiddenlayer6', kernel_regularizer=l2(0.001)))
-model.add(Dense(units=128, activation='relu', name='hiddenlayer7', kernel_regularizer=l2(0.001)))
+    model.add(Dense(units=64, activation='relu', name='hiddenlayer4', kernel_regularizer=l2(0.001)))
+    model.add(Dense(units=64, activation='relu', name='hiddenlayer5', kernel_regularizer=l2(0.001)))
+    model.add(Dense(units=128, activation='relu', name='hiddenlayer6', kernel_regularizer=l2(0.001)))
+    model.add(Dense(units=128, activation='relu', name='hiddenlayer7', kernel_regularizer=l2(0.001)))
 
-# Capa de salida
-model.add(Dense(units=1, activation='linear', name='outputlayer'))
+    # Capa de salida
+    model.add(Dense(units=1, activation='linear', name='outputlayer'))
 
 
-model.summary()
-
-return model 
+    model.summary()
+    
+    return model 
 
     #Función para predecir y evaluar modelos multiclase
 def evaluar_modelo(modelo, X_test, y_test):
-# Realizar predicciones en el conjunto de prueba
-y_pred = modelo.predict(X_test)
+    # Realizar predicciones en el conjunto de prueba
+    y_pred = modelo.predict(X_test)
 
-# Calcular el Error Cuadrático Medio (MSE)
-mse = mean_squared_error(y_test, y_pred)
+    # Calcular el Error Cuadrático Medio (MSE)
+    mse = mean_squared_error(y_test, y_pred)
 
-# Calcular la Raíz del Error Cuadrático Medio (RMSE)
-rmse = np.sqrt(mse)
+    # Calcular la Raíz del Error Cuadrático Medio (RMSE)
+    rmse = np.sqrt(mse)
 
-# Calcular el Coeficiente de Determinación (R2)
-r2 = r2_score(y_test, y_pred)
+    # Calcular el Coeficiente de Determinación (R2)
+    r2 = r2_score(y_test, y_pred)
+    
+    print("Error Cuadrático Medio (MSE):", mse)
+    print("Raíz del Error Cuadrático Medio (RMSE):", rmse)
+    print("Coeficiente de Determinación (R2):", r2)
 
-print("Error Cuadrático Medio (MSE):", mse)
-print("Raíz del Error Cuadrático Medio (RMSE):", rmse)
-print("Coeficiente de Determinación (R2):", r2)
-
-    # Función para trazar las curvas de aprendizaje
+        # Función para trazar las curvas de aprendizaje
 def plot_acc_loss(training_history):
-plt.plot(training_history.history['loss'])
-plt.plot(training_history.history['val_loss'])
-plt.title('Loss vs. Epochs')
-plt.ylabel('Loss')
-plt.xlabel('Epoch')
-plt.legend(['Training', 'Validation'], loc='upper right')
-plt.show()
+    plt.plot(training_history.history['loss'])
+    plt.plot(training_history.history['val_loss'])
+    plt.title('Loss vs. Epochs')
+    plt.ylabel('Loss')
+    plt.xlabel('Epoch')
+    plt.legend(['Training', 'Validation'], loc='upper right')
+    plt.show()
 
 print("-----------* Funciones definidas con éxito \n")
 
